@@ -58,7 +58,7 @@ def generate_year_calendar(year, cell_size=40):
                 if day == 0:
                     continue  # Empty day cell (not part of the current month)
                 
-                if year < current_year or (year == current_year and month_num < now.month) or (year == current_year and month_num == now.month and day <= now.day):
+                if year < current_year or (year == current_year and month_num < now.month) or (year == current_year and month_num == now.month and day < now.day):
                     # Cross out past dates
                     draw.line([(x0, y0), (x1, y1)], fill=cross_color, width=2)
                     draw.line([(x0, y1), (x1, y0)], fill=cross_color, width=2)
