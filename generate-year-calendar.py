@@ -13,9 +13,10 @@ def generate_year_calendar(year, cell_size=40):
     current_year = now.year
     
     # Create a blank image
+    page_padding = cell_size
     cal_width = 8 * cell_size
-    cal_height = 8 * cell_size * 4  # Four rows of months
-    image = Image.new("RGB", (cal_width * 3, cal_height), "white")
+    cal_height = 9 * cell_size * 4 # Four rows of months
+    image = Image.new("RGB", (cal_width * 3 + page_padding, cal_height + page_padding), "white")
     draw = ImageDraw.Draw(image)
     
     for month_num in range(1, 13):
@@ -26,14 +27,14 @@ def generate_year_calendar(year, cell_size=40):
         month_name = calendar.month_name[month_num]
         font = ImageFont.truetype('arial.ttf', 18)
         text_width, text_height = get_text_dimensions(month_name, font)
-        month_padding = (cal_width - text_width) // 2
+        month_name_padding = (cal_width - text_width) // 2
         
-        draw.text((col * cal_width + month_padding, row * cal_height // 4), month_name, fill="black", font=font)
+        draw.text((col * cal_width + month_name_padding, row * cal_height // 4 + page_padding), month_name, fill="black", font=font)
         
         weekdays = calendar.weekheader(2).split()
         for weekday_num, weekday in enumerate(weekdays):
-            x0 = col * cal_width + weekday_num * cell_size
-            y0 = row * cal_height // 4 + cell_size
+            x0 = page_padding + col * cal_width + weekday_num * cell_size
+            y0 = page_padding + row * cal_height // 4 + cell_size
             x1 = x0 + cell_size
             y1 = y0 + cell_size
             
@@ -42,8 +43,8 @@ def generate_year_calendar(year, cell_size=40):
         
         for week_num, week in enumerate(month_calendar):
             for day_num, day in enumerate(week):
-                x0 = col * cal_width + day_num * cell_size
-                y0 = row * cal_height // 4 + (week_num + 2) * cell_size
+                x0 = page_padding + col * cal_width + day_num * cell_size
+                y0 = page_padding + row * cal_height // 4 + (week_num + 2) * cell_size
                 x1 = x0 + cell_size
                 y1 = y0 + cell_size
                 
