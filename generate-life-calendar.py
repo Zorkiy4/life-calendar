@@ -25,6 +25,12 @@ def get_life_weeks(years=80):
 def generate_life_calendar(years=80, cell_size=10, index_size=10):
     total_weeks, passed_weeks = get_life_weeks(years)
     weeks_in_year = 52
+
+    # Life Periods
+    early_years_end = 7 * weeks_in_year
+    school_years_end = 17 * weeks_in_year
+    university_years_end = 22 * weeks_in_year
+    retirement_start = 65 * weeks_in_year
     
     grid_width = weeks_in_year * cell_size
     grid_height = years * cell_size 
@@ -42,7 +48,28 @@ def generate_life_calendar(years=80, cell_size=10, index_size=10):
         x1 = x0 + cell_size
         y1 = y0 + cell_size
 
-        color = "green" if week < passed_weeks else "white"
+        if week < passed_weeks:
+            if week < early_years_end:
+                color = "deepskyblue"
+            elif week < school_years_end:
+                color = "lightseagreen"
+            elif week < university_years_end:
+                color = "yellowgreen"
+            elif week < retirement_start:
+                color = "limegreen"
+            else:
+                color = "lightcoral"
+        else:
+            if week < early_years_end:
+                color = "aliceblue"
+            elif week < school_years_end:
+                color = "paleturquoise"
+            elif week < university_years_end:
+                color = "bisque"
+            elif week < retirement_start:
+                color = "honeydew"
+            else:
+                color = "mistyrose"
         draw.rectangle([x0, y0, x1, y1], fill=color, outline="black")
 
     # Load a font with the specified size
