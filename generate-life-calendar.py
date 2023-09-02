@@ -27,11 +27,11 @@ def generate_life_calendar(years=80, cell_size=10, index_size=10):
     weeks_in_year = 52
     
     grid_width = weeks_in_year * cell_size
-    grid_height = (years + 1) * cell_size 
+    grid_height = years * cell_size 
     
-    index_offset = index_size + 5
+    index_offset = index_size * 2
     
-    image = Image.new("RGB", (grid_width + index_offset, grid_height + index_offset), "white")
+    image = Image.new("RGB", (grid_width + index_offset*2, grid_height + index_offset*2), "white")
     draw = ImageDraw.Draw(image)
     
     for week in range(total_weeks):
@@ -50,11 +50,12 @@ def generate_life_calendar(years=80, cell_size=10, index_size=10):
 
     # Add index labels along the top every 5 years
     for col in range(0, weeks_in_year * years, weeks_in_year * 5):
-        draw.text((col * cell_size / weeks_in_year + index_offset, 5), str(col // weeks_in_year), fill="black", font=font)
+        draw.text((col * cell_size / weeks_in_year + index_offset - index_size / 2, 5), str(col // weeks_in_year), fill="black", font=font)
 
     # Add index labels along the left every 5 weeks
     for row in range(0, total_weeks, 5):
-        draw.text((5, row * cell_size / weeks_in_year + index_offset), str(row // weeks_in_year), fill="black", font=font)
+        v_index_y = row * cell_size + index_offset - index_size / 2
+        draw.text((5, v_index_y), str(row), fill="black", font=font)
     
     return image
 
