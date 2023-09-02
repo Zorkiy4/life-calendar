@@ -13,9 +13,14 @@ def generate_year_calendar(year, cell_size=40):
     current_year = now.year
     
     # Create a blank image
+    # Dark Theme
     bkg_color = "black"
     text_color = "white"
     cross_color = "red"
+    # Light Theme
+    # bkg_color = "white"
+    # text_color = "black"
+    # cross_color = "red"
     page_padding = cell_size
     cal_width = 8 * cell_size
     cal_height = 9 * cell_size * 4 # Four rows of months
