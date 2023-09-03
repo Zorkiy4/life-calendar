@@ -40,6 +40,9 @@ def generate_year_calendar(year, cell_size=40):
     draw = ImageDraw.Draw(image)
     font = ImageFont.truetype('arial.ttf', 18)
 
+    # Load evemts from file
+    events = load_events()
+
     year_width, year_height = get_text_dimensions(str(current_year), font)
     year_padding = (cal_width * 3 - year_width) // 2
     draw.text((year_padding, page_padding // 4), str(current_year), fill=text_color, font=font)
@@ -77,8 +80,6 @@ def generate_year_calendar(year, cell_size=40):
 
                 current_date = datetime.date(year, month_num, day)
 
-                # Load evemts from file
-                events = load_events()
                 if events:
                     for event in events:
                         if event['date'] == current_date:
