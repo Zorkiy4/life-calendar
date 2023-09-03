@@ -1,12 +1,24 @@
 from PIL import Image, ImageDraw, ImageFont
 import datetime
 import calendar
-import math
+import os
+
+from ruamel import yaml
 
 def get_text_dimensions(text_string, font):
     ascent, descent = font.getmetrics()
     (width, baseline), (offset_x, offset_y) = font.font.getsize(text_string)
     return width, baseline
+
+def load_events(events_file_name = 'events.yaml'):
+    if os.path.exists(events_file_name):
+        with open(events_file_name, 'r') as file:
+            return yaml.load(file, Loader=yaml.RoundTripLoader)
+    return
+
+def cross_out_date(draw, x0, y0, x1, y1, cross_color = 'red'):
+    draw.line([(x0, y0), (x1, y1)], fill=cross_color, width=2)
+    draw.line([(x0, y1), (x1, y0)], fill=cross_color, width=2)
 
 def generate_year_calendar(year, cell_size=40):
     now = datetime.datetime.now()
@@ -14,13 +26,13 @@ def generate_year_calendar(year, cell_size=40):
     
     # Create a blank image
     # Dark Theme
-    bkg_color = "black"
-    text_color = "white"
-    cross_color = "red"
-    # Light Theme
-    # bkg_color = "white"
-    # text_color = "black"
+    # bkg_color = "black"
+    # text_color = "white"
     # cross_color = "red"
+    # Light Theme
+    bkg_color = "white"
+    text_color = "black"
+    cross_color = "red"
     page_padding = cell_size
     cal_width = 8 * cell_size
     cal_height = 9 * cell_size * 4 # Four rows of months
@@ -59,15 +71,23 @@ def generate_year_calendar(year, cell_size=40):
                 y0 = page_padding + row * cal_height // 4 + (week_num + 2) * cell_size
                 x1 = x0 + cell_size
                 y1 = y0 + cell_size
-                
+
                 if day == 0:
                     continue  # Empty day cell (not part of the current month)
-                
-                if year < current_year or (year == current_year and month_num < now.month) or (year == current_year and month_num == now.month and day < now.day):
-                    # Cross out past dates
-                    draw.line([(x0, y0), (x1, y1)], fill=cross_color, width=2)
-                    draw.line([(x0, y1), (x1, y0)], fill=cross_color, width=2)
-                
+
+                current_date = datetime.date(year, month_num, day)
+
+                # Load evemts from file
+                events = load_events()
+                if events:
+                    for event in events:
+                        if event['date'] == current_date:
+                            draw.rectangle([x0, y0, x1, y1], outline="black", fill = event['color'] if 'color' in event else 'lightskyblue')
+                            break
+
+                if current_date < datetime.date.today():
+                    cross_out_date(draw, x0, y0, x1, y1, cross_color)
+
                 draw.rectangle([x0, y0, x1, y1], outline="black")
                 draw.text((x0 + cell_size // 2, y0 + cell_size // 2), str(day), fill=text_color, anchor="mm", font=font)
         
