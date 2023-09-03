@@ -22,8 +22,7 @@ def cross_out_date(draw, x0, y0, x1, y1, cross_color = 'red'):
 
 def generate_year_calendar(year, cell_size=40):
     now = datetime.datetime.now()
-    current_year = now.year
-    
+
     # Create a blank image
     # Dark Theme
     # bkg_color = "black"
@@ -38,14 +37,16 @@ def generate_year_calendar(year, cell_size=40):
     cal_height = 9 * cell_size * 4 # Four rows of months
     image = Image.new("RGB", (cal_width * 3 + page_padding, cal_height + page_padding), bkg_color)
     draw = ImageDraw.Draw(image)
-    font = ImageFont.truetype('arial.ttf', 18)
+    base_font_size = int(cell_size * 0.5)
+    font = ImageFont.truetype('arial.ttf', base_font_size)
+    titles_font = ImageFont.truetype('arial.ttf', int(base_font_size * 1.3))
 
     # Load evemts from file
     events = load_events()
 
-    year_width, year_height = get_text_dimensions(str(current_year), font)
+    year_width, year_height = get_text_dimensions(str(year), font)
     year_padding = (cal_width * 3 - year_width) // 2
-    draw.text((year_padding, page_padding // 4), str(current_year), fill=text_color, font=font)
+    draw.text((year_padding, page_padding // 4), str(year), fill=text_color, font=titles_font)
     
     for month_num in range(1, 13):
         row = (month_num - 1) // 3
@@ -56,7 +57,7 @@ def generate_year_calendar(year, cell_size=40):
         text_width, text_height = get_text_dimensions(month_name, font)
         month_name_padding = (cal_width - text_width) // 2
         
-        draw.text((col * cal_width + month_name_padding, row * cal_height // 4 + page_padding), month_name, fill=text_color, font=font)
+        draw.text((col * cal_width + month_name_padding, row * cal_height // 4 + page_padding), month_name, fill=text_color, font=titles_font)
         
         weekdays = calendar.weekheader(2).split()
         for weekday_num, weekday in enumerate(weekdays):
